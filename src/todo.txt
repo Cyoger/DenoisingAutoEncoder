@@ -1,0 +1,7 @@
+plot the curve loss and val loss on same curve
+play around with dense layers(with factors of 2)
+dont forget about -1 and 1
+read more about underfit overfit
+use noisy data as input in the autoencoder
+read more about activation functions
+dont work half asleep
