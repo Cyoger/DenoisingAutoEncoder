@@ -32,28 +32,44 @@ def change_contrast(image, contrast):
         return image
 
 
-os.makedirs("predictions/", exist_ok=True)
+os.makedirs("predictions4/", exist_ok=True)
 total_welds = len(list)
 predictions = []
-#write a loop to get all the predictions for the test data using the getitem method in gen.py
+
+
 for i in range(0, len(list)):
     weld_id = int(list[i].replace("raw_image_", "").replace(".tif", ""))
         
     print("Weld", i + 1, "/", total_welds, end='\t\t\r')
     x, y = data_gen.__getitem__(i)
     
-    im = np.zeros((128, 257))
+    im = np.zeros((128, 128 * 3 + 4))
     
     output = model.predict(x, verbose=0)
     output = np.squeeze(output)
     output = (output + 1) / 2 * 255
+    x = (x + 1) / 2 * 255
     y = (y + 1) / 2 * 255
     
-    im[:, 0:128] = output
+    # cv2.imshow("", output)
     
-    im[:, 129:] = y
+    output = change_contrast(output, 10)
+    x = change_contrast(x, 10)
+    y = change_contrast(y, 10)
     
-    cv2.imwrite("predictions/Weld_" + str(weld_id) + ".png", im.astype('uint8'))
+    # cv2.imshow("", output.astype('uint8'))
+    # cv2.waitKey(0)
+    # exit()
+    
+    im[:, 0:128] = x
+    im[:, 130: 130 + 128] = y
+    
+    im[:, 129 + 128 + 3:] = output
+    # cv2.imshow("", im.astype('uint8'))
+    # cv2.waitKey(0)
+    # exit()
+    #noise, target, reconstructed
+    cv2.imwrite("predictions4/Weld_" + str(weld_id) + ".png", im.astype('uint8'))
 
 # for i in range(0, len(p)):
 #     p[i] = np.squeeze(p[i])
